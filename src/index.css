@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+*{
+    font-family: monospace;
+}
+body{
+    overflow: hidden;
+}
+input::placeholder{
+    font-family: monospace;
+}
+
+.ant-menu-item-selected{
+    background-color: #ffffffa5 !important;
+    color: black !important;
+}
+
+.ant-input-affix-wrapper:hover, .ant-pagination-item{
+    border-color: #8f5c28 !important;
+}
+.ant-pagination-item > a{
+    color: #8f5c28 !important;
+}
+.ant-input-affix-wrapper-focused{
+    border-color: #8f5c28 !important;
+    box-shadow: 0 0 2px 0px #8f5c28 !important;
+}
+.ant-spin-dot-holder{
+    color: #8f5c28 !important;
+}
+.ant-btn-primary{
+    background-color: #8f5c28 !important;
+}
