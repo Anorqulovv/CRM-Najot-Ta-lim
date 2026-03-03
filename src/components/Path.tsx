@@ -9,6 +9,7 @@ const PATH = {
     stacksCreate:"/stacks/create",
     stacksUpdate:"/stacks/:stackId/update",
     stacksGroupCreate:"/stacks/:stackId/create",
+    stacksStudentCreate:"/stacks/:stackId/:groupId/create",
 
     groups:"/groups",
     groupsMore:"/groups/:groupId",
@@ -17,11 +18,13 @@ const PATH = {
     teachersGroupUpdate:"/teachers/:teacherId/:groupId/update",
     groupsUpdate:"/groups/:groupId/update",
     groupsCreate:"/groups/create",
+    groupStudentCreate:"/groups/:groupId/create",
 
     teachers:"/teachers",
     teachersMore:"/teachers/:teacherId",
     teachersUpdate:"/teachers/:teacherId/update",
     teachersCreate:"/teachers/create",
+    teacherStudentCreate:"/teachers/:teacherId/:groupId/create",
 
     rooms:"/rooms",
     roomsMore:"/rooms/:id",
@@ -33,7 +36,6 @@ const PATH = {
     studentsUpdate:"/students/:studentId/update",
     studentsCreate:"/students/create",
     groupStudentMore: "/groups/:groupId/:studentId",
-    groupStudentCreate: "/groups/:groupId/create",
     groupStudentUpdate: "/groups/:groupId/create",
 
     users:"/users",

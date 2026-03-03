@@ -34,20 +34,19 @@ const GetAll = (queryKey: string, filterProps: any[], token: string, URL: string
     })
     return data
 }
-const Delete = (token: string, URL: string, navigate: NavigateFunction, queryClient: QueryClient, queryKey: string) => {
-    const data = useMutation({
-        mutationFn: () => instance(token).delete(URL),
-        onSuccess: () => {
-            toast.success("O'chirildi!")
-            setTimeout(() => {
-                navigate(-1)
-                queryClient.invalidateQueries({ queryKey: [queryKey] })
-            })
-        },
-        onError: err => toast.error(err.message)
-    })
-    return data
-}
+const Delete = (token: string,URL: string,navigate: NavigateFunction | undefined,queryClient: QueryClient,queryKey: string) => {
+  return useMutation({
+    mutationFn: () => instance(token).delete(URL),
+    onSuccess: () => {
+      toast.success("O'chirildi!");
+      setTimeout(() => {
+        navigate?.(-1);
+        queryClient.invalidateQueries({ queryKey: [queryKey] });
+      }, 0);
+    },
+    onError: (err: any) => toast.error(err?.message ?? "Xatolik"),
+  });
+};
 const Create = (token: string, URL: string, navigate: NavigateFunction, queryClient: QueryClient, queryKey: string) => {
     const data = useMutation({
         mutationFn: (body: any) => instance(token).post(URL, body),
