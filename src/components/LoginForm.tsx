@@ -30,8 +30,12 @@ const LoginForm = () => {
       instance().post("/auth/login", body),
     onSuccess: (res) => {
       toast.success("Muvaffaqiyatli kirdingiz!")
-      setCookie("accessToken", res.data.data.token.accessToken)
-      navigate(PATH.home)
+      queryClient.clear()
+      localStorage.clear()
+      sessionStorage.clear()
+      setCookie("accessToken", res.data.data.token.accessToken, { path: "/" })
+      const role = res.data?.data?.user?.role
+      navigate(role === "PARENT" ? PATH.profile : PATH.home, { replace: true })
       queryClient.removeQueries({ queryKey: [QueryPATH.me] })
     },
     onError: (err: any) =>
@@ -56,8 +60,12 @@ const LoginForm = () => {
       instance().post("/auth/otp/verify", body),
     onSuccess: (res) => {
       toast.success("Muvaffaqiyatli kirdingiz!")
-      setCookie("accessToken", res.data.data.token.accessToken)
-      navigate(PATH.home)
+      queryClient.clear()
+      localStorage.clear()
+      sessionStorage.clear()
+      setCookie("accessToken", res.data.data.token.accessToken, { path: "/" })
+      const role = res.data?.data?.user?.role
+      navigate(role === "PARENT" ? PATH.profile : PATH.home, { replace: true })
       queryClient.removeQueries({ queryKey: [QueryPATH.me] })
     },
     onError: (err: any) =>

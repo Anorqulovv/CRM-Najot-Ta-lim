@@ -39,6 +39,7 @@ const Tests: FC<TestsType> = ({ title }) => {
   const [deleted, setDeleted] = useState(false);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"ALL" | "DAILY" | "WEEKLY" | "MONTHLY">("ALL");
   const name = debounce(search, 1000);
 
   // Barcha testlar
@@ -69,26 +70,88 @@ const Tests: FC<TestsType> = ({ title }) => {
     undefined
   );
 
+  // Studentni topish uchun barcha studentlar olinadi.
+  // Muhim: student role'dagi user faqat o'z groupId va group.directionId bo'yicha test ko'rishi kerak.
+  const { data: allStudentsRaw = [] } = GetAll(
+    QueryPATH.students,
+    [isStudent ? userInfo?.id : null],
+    cookies.accessToken,
+    "/students",
+    {},
+    undefined,
+    undefined
+  );
+
+  const currentStudent = isStudent
+    ? allStudentsRaw.find((student: any) => {
+        const userId = Number(student.userId ?? student.user?.id);
+        return userId === Number(userInfo?.id);
+      })
+    : null;
+
+  const studentGroupId = Number(
+    currentStudent?.groupId ??
+    currentStudent?.group?.id ??
+    0
+  );
+
+  const studentDirectionId = Number(
+    currentStudent?.group?.directionId ??
+    currentStudent?.directionId ??
+    currentStudent?.direction?.id ??
+    userInfo?.directionId ??
+    0
+  );
+
   // Teacher guruh ID lari
   const myGroupIds: number[] = isTeacher
-    ? myGroupsRaw.map((g: any) => g.id)
+    ? myGroupsRaw.map((g: any) => Number(g.id))
     : [];
 
-  // Teacher uchun filter: o'z guruhiga yoki yo'nalishiga tegishli testlar
-  const tests = isTeacher
-    ? allTests.filter((test: any) => {
-      // Guruhga bog'liq test — o'sha guruh teacherniki bo'lishi kerak
-      if (test.groupId) {
-        return myGroupIds.includes(test.groupId);
-      }
-      // Yo'nalishga bog'liq test — teacher shu yo'nalishda bo'lishi kerak
-      if (test.directionId) {
-        return test.directionId === myTeacherInfo?.directionId;
-      }
-      // Umumiy test — teacher uchun ko'rsatilmaydi
-      return false;
-    })
-    : allTests;
+  const isTestForStudent = (test: any) => {
+    // Guruhi yo'q o'quvchiga hech qanday test ko'rinmasin
+    if (!studentGroupId) return false;
+
+    // Guruhga biriktirilgan test faqat o'sha guruh o'quvchilariga ko'rinsin
+    if (test.groupId) {
+      return Number(test.groupId) === studentGroupId;
+    }
+
+    // Yo'nalishga biriktirilgan test faqat o'quvchining guruhi shu yo'nalishda bo'lsa ko'rinsin
+    if (test.directionId) {
+      return Number(test.directionId) === studentDirectionId;
+    }
+
+    // Umumiy test studentga ko'rinmasin
+    return false;
+  };
+
+  const isTestForTeacher = (test: any) => {
+    // Guruhga bog'liq test — o'sha guruh teacherniki bo'lishi kerak
+    if (test.groupId) {
+      return myGroupIds.includes(Number(test.groupId));
+    }
+
+    // Yo'nalishga bog'liq test — teacher shu yo'nalishda bo'lishi kerak
+    if (test.directionId) {
+      return Number(test.directionId) === Number(myTeacherInfo?.directionId);
+    }
+
+    // Umumiy test teacher uchun ko'rsatilmaydi
+    return false;
+  };
+
+  // Student uchun backendning o'zi faqat o'z guruhiga tegishli testlarni qaytaradi.
+  // Frontendda qayta filter qilsak, /students response ichida groupId topilmasa testlar yashirinib qoladi.
+  const roleFilteredTests = isStudent
+    ? allTests
+    : isTeacher
+      ? allTests.filter(isTestForTeacher)
+      : allTests;
+
+  const tests = typeFilter === "ALL"
+    ? roleFilteredTests
+    : roleFilteredTests.filter((test: any) => test.type === typeFilter);
 
   const deleteUrl = selectedId ? `/tests/${selectedId}` : "";
   const { mutate: DeleteTest, isPending: deleteLoading } = Delete(
@@ -118,7 +181,7 @@ const Tests: FC<TestsType> = ({ title }) => {
   };
 
   return (
-    <div style={{ padding: "28px", background: "#f8f7f4", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", background: "#f8f7f4", minHeight: "100%" }}>
 
       {/* ── Tepa: Sarlavha + Yaratish tugmasi ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
@@ -165,6 +228,31 @@ const Tests: FC<TestsType> = ({ title }) => {
           <span>Faqat sizning guruhlaringizga va yo'nalishingizga tegishli testlar ko'rsatilmoqda.</span>
         </div>
       )}
+
+
+      {/* Test type filter */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+        {[
+          { value: "ALL", label: "Barchasi" },
+          { value: "DAILY", label: "Kunlik testlar" },
+          { value: "WEEKLY", label: "Haftalik testlar" },
+          { value: "MONTHLY", label: "Oylik testlar" },
+        ].map((item: any) => (
+          <Button
+            key={item.value}
+            onClick={() => setTypeFilter(item.value)}
+            style={{
+              borderRadius: 10,
+              fontWeight: 700,
+              background: typeFilter === item.value ? "linear-gradient(135deg, #8f5c28, #b8782a)" : "#fff",
+              color: typeFilter === item.value ? "#fff" : "#8f5c28",
+              border: "1px solid #d6c4b0",
+            }}
+          >
+            {item.label}
+          </Button>
+        ))}
+      </div>
 
       {/* Qidiruv */}
       <div style={{ marginBottom: 24 }}>
@@ -228,7 +316,7 @@ const Tests: FC<TestsType> = ({ title }) => {
 
                 {/* Ikon + Type tag */}
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: cfg.bg, display: "flex", alignItems: "center", justifyContent: "center", color: cfg.color, fontSize: 20 }}>
+                  <div style={{ width: 44, minHeight: 44, borderRadius: 12, background: cfg.bg, display: "flex", alignItems: "center", justifyContent: "center", color: cfg.color, fontSize: 20 }}>
                     {cfg.icon}
                   </div>
                   <Tag style={{ background: cfg.bg, color: cfg.color, border: "none", borderRadius: 20, padding: "2px 12px", fontWeight: 600, fontSize: 12 }}>

@@ -16,7 +16,7 @@ const C = {
   accentGradient: 'linear-gradient(135deg, #7a4520, #c8864a)',
   accentBg: 'linear-gradient(135deg, #f5ece3 0%, #fdf9f6 100%)',
   accentBorder: '#f0e8df',
-  inputStyle: { borderRadius: 9, borderColor: '#e5d8cc', background: '#fdfaf7', height: 44 } as React.CSSProperties,
+  inputStyle: { borderRadius: 9, borderColor: '#e5d8cc', background: '#fdfaf7', minHeight: 44 } as React.CSSProperties,
 }
 
 const Field = ({ label, hint, required, fullWidth, children }: {
@@ -49,7 +49,8 @@ const StudentsCrud = () => {
   const currentUser = useCurrentUser()
   const isTeacher = currentUser?.role === "TEACHER"
   const isSupport = currentUser?.role === "SUPPORT"
-  const isReadOnly = isSupport
+  const isAdmin = ["SUPERADMIN", "ADMIN"].includes(currentUser?.role ?? "")
+  const isReadOnly = !isAdmin
 
   const { studentId, groupId: groupPathId } = useParams<{ studentId?: string, groupId?: string }>()
   const navigate = useNavigate()

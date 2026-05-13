@@ -484,7 +484,7 @@ const TestsMore = () => {
   );
 
   return (
-    <div style={{ padding: "28px", background: "#f8f7f4", minHeight: "100vh" }}>
+    <div style={{ padding: "28px", background: "#f8f7f4", minHeight: "100%" }}>
 
       {/* ===== TOP ACTIONS ===== */}
       <div style={{
@@ -649,7 +649,7 @@ const TestsMore = () => {
                   marginTop: 8,
                   background: "linear-gradient(135deg, #16a34a, #15803d)",
                   border: "none", color: "#fff", borderRadius: 12,
-                  height: 44, paddingInline: 28, fontWeight: 700,
+                  minHeight: 44, paddingInline: 28, fontWeight: 700,
                   boxShadow: "0 4px 12px rgba(22,163,74,0.3)"
                 }}
               >

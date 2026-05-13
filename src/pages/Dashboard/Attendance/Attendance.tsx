@@ -353,7 +353,7 @@ const AttendancePage: FC<AttendancePageProps> = ({ title = "Davomat" }) => {
   ];
 
   return (
-    <div style={{ padding: "28px", background: "#f8f7f4", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", background: "#f8f7f4", minHeight: "100%" }}>
       {/* Header */}
       <div
         style={{
@@ -399,7 +399,7 @@ const AttendancePage: FC<AttendancePageProps> = ({ title = "Davomat" }) => {
               border: "none",
               borderRadius: 10,
               fontWeight: 600,
-              height: 44,
+              minHeight: 44,
               paddingInline: 22,
               boxShadow: "0 4px 14px rgba(143,92,40,0.3)",
             }}
@@ -452,7 +452,7 @@ const AttendancePage: FC<AttendancePageProps> = ({ title = "Davomat" }) => {
             <div
               style={{
                 width: 44,
-                height: 44,
+                minHeight: 44,
                 borderRadius: 12,
                 background: "rgba(255,255,255,0.2)",
                 display: "flex",

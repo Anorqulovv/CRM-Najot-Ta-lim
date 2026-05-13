@@ -65,6 +65,7 @@ const PATH = {
 
   // Profile
   profile: "/profile",
+  parentResults: "/parent/results",
 
   // Branches (Filiallar)
   branches: "/branches",

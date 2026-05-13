@@ -387,6 +387,11 @@ const AttendanceModal = ({ open, onClose }: { open: boolean; onClose: () => void
 }
 
 // ── Main Groups component ────────────────────────────────────────
+const makeGroupMorePath = (basePath: string, groupId: number) => {
+  const cleanBase = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
+  return `${cleanBase}/${groupId}`
+}
+
 const Groups: FC<GroupType> = ({
   stackPropId, teacherPropId, supportPropId, basePath = "/groups"
 }) => {
@@ -396,7 +401,7 @@ const Groups: FC<GroupType> = ({
 
   const isSupport = currentUser?.role === "SUPPORT"
   const isTeacher = currentUser?.role === "TEACHER"
-  const canMark = ['SUPERADMIN', 'ADMIN', 'TEACHER'].includes(currentUser?.role ?? '')
+  const canMark = ['SUPERADMIN', 'ADMIN'].includes(currentUser?.role ?? '')
 
   const [directionId, setDirectionId] = useState<number | null>(stackPropId ?? null)
   const [teacherId, setTeacherId] = useState<number | null>(
@@ -425,7 +430,7 @@ const Groups: FC<GroupType> = ({
     }
   }
 
-  const isAdminOrTeacher = ['SUPERADMIN', 'ADMIN', 'TEACHER'].includes(currentUser?.role ?? '')
+  const isAdmin = ['SUPERADMIN', 'ADMIN'].includes(currentUser?.role ?? '')
 
   const ScoreCell = ({ groupId }: { groupId: number }) => {
     const { data } = useQuery({
@@ -434,7 +439,7 @@ const Groups: FC<GroupType> = ({
         instance(cookies.accessToken)
           .get(`/groups/${groupId}/score`)
           .then(r => r.data.data),
-      enabled: !!groupId && isAdminOrTeacher,
+      enabled: !!groupId && isAdmin,
       staleTime: 60_000,
     })
     if (!data) return <span style={{ color: '#ccc' }}>—</span>
@@ -496,7 +501,7 @@ const Groups: FC<GroupType> = ({
         </span>
       ),
     },
-    ...(isAdminOrTeacher ? [{
+    ...(isAdmin ? [{
       title: "Ko'rsatkich",
       dataIndex: "id",
       render: (_: any, row: any) => <ScoreCell groupId={row.id} />,
@@ -525,7 +530,7 @@ const Groups: FC<GroupType> = ({
 
   const renderLayout = (filters: React.ReactNode) => (
     <div style={{ padding: '20px' }}>
-      <Caption count={groups.length} title="Guruxlar" />
+      <Caption count={groups.length} title="Guruxlar" hideCreate={!isAdmin} />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>
         <Input

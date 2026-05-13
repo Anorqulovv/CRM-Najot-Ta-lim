@@ -22,6 +22,7 @@ import { Header, Sitebar } from "../modules";
 import Branches from "../pages/Dashboard/Branches/Branches";
 import BranchesCrud from "../pages/Dashboard/Branches/BranchesCrud";
 import Profile from "../pages/Dashboard/Profile/Profile";
+import ParentResults from "../pages/Dashboard/ParentResults/ParentResults";
 import { useContext, useMemo } from "react";
 import { Context } from "../context/Context";
 import { GetMe } from "../service";
@@ -42,12 +43,12 @@ const ALL_ROUTES = [
   // Directions
   { id: 3, path: PATH.directionsCreate, element: <StacksCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 5, path: PATH.directionsUpdate, element: <StacksCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
-  { id: 2, path: PATH.directions, element: <Stacks />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
+  { id: 2, path: PATH.directions, element: <Stacks />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 32, path: PATH.groupsCreateByDirections, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
   { id: 35, path: PATH.studentCreateByDirections, element: <StudentCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
   { id: 34, path: PATH.groupsUpdateMoreByDirections, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
-  { id: 33, path: PATH.groupsMoreByDirections, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
-  { id: 4, path: PATH.directionsMore, element: <StacksMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
+  { id: 33, path: PATH.groupsMoreByDirections, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
+  { id: 4, path: PATH.directionsMore, element: <StacksMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
 
   // Groups
   { id: 8, path: PATH.groupsCreate, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
@@ -62,7 +63,7 @@ const ALL_ROUTES = [
   { id: 37, path: PATH.groupsCreateByTeachers, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
   { id: 41, path: PATH.groupsMoreUpdateByTeachers, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
   { id: 39, path: PATH.studentsCreateByTeachers, element: <StudentCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
-  { id: 40, path: PATH.groupsMoreByTeachers, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
+  { id: 40, path: PATH.groupsMoreByTeachers, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 10, path: PATH.teachers, element: <Teachers title="Ustozlar" />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.SUPPORT] },
   { id: 11, path: PATH.teachersMore, element: <TeachersMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.SUPPORT] },
 
@@ -84,7 +85,7 @@ const ALL_ROUTES = [
   { id: 24, path: PATH.supportCreate, element: <SupportCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 26, path: PATH.supportUpdate, element: <SupportCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 38, path: PATH.groupCreateBySupportTeacher, element: <GroupsCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER] },
-  { id: 42, path: PATH.groupMoreBySupportTeacher, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
+  { id: 42, path: PATH.groupMoreBySupportTeacher, element: <GroupsMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 23, path: PATH.support, element: <Support title="Support" />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
   { id: 25, path: PATH.supportMore, element: <SupportMore />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
 
@@ -101,11 +102,12 @@ const ALL_ROUTES = [
   { id: 101, path: PATH.usersMore, element: <UsersMore />, roles: [ROLES.SUPERADMIN] },
 
   // Branches (Filiallar) - SUPERADMIN boshqaradi, ADMIN/TEACHER/SUPPORT ko'ra oladi
-  { id: 300, path: PATH.branches, element: <Branches />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.TEACHER, ROLES.SUPPORT] },
-  { id: 301, path: PATH.branchesCreate, element: <BranchesCrud />, roles: [ROLES.SUPERADMIN] },
-  { id: 302, path: PATH.branchesUpdate, element: <BranchesCrud />, roles: [ROLES.SUPERADMIN] },
+  { id: 300, path: PATH.branches, element: <Branches />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
+  { id: 301, path: PATH.branchesCreate, element: <BranchesCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
+  { id: 302, path: PATH.branchesUpdate, element: <BranchesCrud />, roles: [ROLES.SUPERADMIN, ROLES.ADMIN] },
 
   { id: 200, path: PATH.profile, element: <Profile />, roles: Object.values(ROLES) },
+  { id: 201, path: PATH.parentResults, element: <ParentResults />, roles: [ROLES.PARENT] },
   { id: 999, path: PATH.notFound, element: <NotFound />, roles: Object.values(ROLES) },
 ];
 

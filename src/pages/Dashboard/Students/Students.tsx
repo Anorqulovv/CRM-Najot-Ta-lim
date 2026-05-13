@@ -23,6 +23,7 @@ const Students: FC<StudentType> = ({ groupPropId, teacherPropId }) => {
   const currentUser = useCurrentUser()
   const isTeacher = currentUser?.role === "TEACHER"
   const isSupport = currentUser?.role === "SUPPORT"
+  const isAdmin = ['SUPERADMIN', 'ADMIN'].includes(currentUser?.role ?? '')
 
   const columns = [
     { title: "ID", dataIndex: "key", width: 60 },
@@ -81,7 +82,7 @@ const Students: FC<StudentType> = ({ groupPropId, teacherPropId }) => {
 
   return (
     <div style={{ padding: '24px 24px' }}>
-      <Caption count={students.length} title="O'quvchilar" />
+      <Caption count={students.length} title="O'quvchilar" hideCreate={!isAdmin} />
 
       {/* Filters */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>

@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { useCookies } from "react-cookie"
 import { useNavigate, useParams } from "react-router-dom"
@@ -10,7 +10,17 @@ import {
   FieldNumberOutlined, HistoryOutlined, IdcardOutlined, PhoneOutlined,
   TeamOutlined, UserOutlined, ApartmentOutlined,
 } from "@ant-design/icons"
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip as ChartTooltip,
+} from "recharts"
 import { useCurrentUser } from "../../../hooks/useCurrentUser"
+import { instance } from "../../../hooks"
 
 const C = {
   accent: '#8f5c28',
@@ -61,9 +71,19 @@ const StudentMore = () => {
   const currentUser = useCurrentUser()
   const isSupport = currentUser?.role === "SUPPORT"
   const isReadOnly = isSupport
+  const canViewAnalytics = ["SUPERADMIN", "ADMIN", "TEACHER"].includes(currentUser?.role ?? "")
 
   const { data: moreInfo = {}, isLoading } = GetById(studentId, cookies.accessToken, QueryPATH.studentsMore, "/students")
   const { mutate: DeleteStudent, isPending: deleteLoading } = Delete(cookies.accessToken, `/students/${studentId}`, navigate, queryClient, QueryPATH.students)
+
+  const { data: analytics = {}, isLoading: analyticsLoading } = useQuery({
+    queryKey: ["student-analytics", studentId, cookies.accessToken],
+    queryFn: async () => {
+      const res = await instance(cookies.accessToken).get(`/tests/student/${studentId}/analytics`)
+      return res.data?.data
+    },
+    enabled: Boolean(canViewAnalytics && studentId && cookies.accessToken),
+  })
 
   const initials = moreInfo.user?.fullName
     ? `${moreInfo.user.fullName.split(" ")[0]?.[0] ?? ""}${moreInfo.user.fullName.split(" ")[1]?.[0] ?? ""}`
@@ -148,6 +168,60 @@ const StudentMore = () => {
           )}
         </div>
       </div>
+
+        {canViewAnalytics && (
+          <SectionCard title="Test natijalari diagrammasi">
+            {analyticsLoading ? (
+              <div style={{ padding: 20 }}>
+                <Skeleton active paragraph={{ rows: 4 }} />
+              </div>
+            ) : analytics?.tests?.length ? (
+              <div style={{ padding: "16px 0" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 18 }}>
+                  <div style={{ padding: 12, borderRadius: 12, background: "#f5ece3" }}>
+                    <div style={{ fontSize: 11, color: "#8f5c28", fontWeight: 700 }}>Jami test</div>
+                    <div style={{ fontSize: 22, fontWeight: 800 }}>{analytics.totalTests ?? 0}</div>
+                  </div>
+                  <div style={{ padding: 12, borderRadius: 12, background: "#ecfdf5" }}>
+                    <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700 }}>O'rtacha</div>
+                    <div style={{ fontSize: 22, fontWeight: 800 }}>{analytics.averageScore ?? 0}%</div>
+                  </div>
+                  <div style={{ padding: 12, borderRadius: 12, background: "#eff6ff" }}>
+                    <div style={{ fontSize: 11, color: "#2563eb", fontWeight: 700 }}>Eng yuqori</div>
+                    <div style={{ fontSize: 22, fontWeight: 800 }}>{analytics.highestScore ?? 0}%</div>
+                  </div>
+                  <div style={{ padding: 12, borderRadius: 12, background: "#fff7ed" }}>
+                    <div style={{ fontSize: 11, color: "#ea580c", fontWeight: 700 }}>Eng past</div>
+                    <div style={{ fontSize: 22, fontWeight: 800 }}>{analytics.lowestScore ?? 0}%</div>
+                  </div>
+                </div>
+
+                <div style={{ width: "100%", height: 300 }}>
+                  <ResponsiveContainer>
+                    <LineChart data={analytics.tests}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+                      <ChartTooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#8f5c28"
+                        strokeWidth={3}
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 7 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: 20, color: "#999", fontSize: 13 }}>
+                Bu o'quvchida hali test natijalari yo'q.
+              </div>
+            )}
+          </SectionCard>
+        )}
 
       {/* Delete modal */}
       {!isReadOnly && (

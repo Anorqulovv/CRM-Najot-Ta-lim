@@ -24,6 +24,12 @@ const TEST_TYPES = [
   { value: "MONTHLY", label: "Oylik", color: "#7c3aed" },
 ];
 
+const TEST_STATUSES = [
+  { value: "ACTIVE", label: "Faol" },
+  { value: "PAUSED", label: "To'xtatilgan" },
+  { value: "FINISHED", label: "Tugallangan" },
+];
+
 interface Choice { text: string; isCorrect: boolean; }
 interface Question { text: string; choices: Choice[]; }
 const emptyChoice = (): Choice => ({ text: "", isCorrect: false });
@@ -33,7 +39,8 @@ const emptyQuestion = (): Question => ({
 });
 
 const TestsCrud = () => {
-  const { id } = useParams();
+  const { testId } = useParams();
+  const id = testId;
   const navigate = useNavigate();
   const [cookies] = useCookies(["accessToken"]);
   const queryClient = useQueryClient();
@@ -43,11 +50,18 @@ const TestsCrud = () => {
 
   const [title, setTitle] = useState("");
   const [type, setType] = useState("DAILY");
+  const [status, setStatus] = useState("ACTIVE");
   const [minScore, setMinScore] = useState(60);
   const [directionId, setDirectionId] = useState<number | null>(null);
   const [groupId, setGroupId] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([emptyQuestion()]);
   const [saving, setSaving] = useState(false);
+
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiCount, setAiCount] = useState(10);
+  const [aiDifficulty, setAiDifficulty] = useState<"easy" | "medium" | "hard">("medium");
 
   const { mutate: TestUpdate } = Update(
     cookies.accessToken, `/tests/${id}`, navigate, queryClient,
@@ -77,6 +91,8 @@ const TestsCrud = () => {
     if (moreInfo && id) {
       setTitle(moreInfo.title ?? "");
       setType(moreInfo.type ?? "DAILY");
+      setStatus(moreInfo.status ?? "ACTIVE");
+      setStatus(moreInfo.status ?? "ACTIVE");
       setMinScore(moreInfo.minScore ?? 60);
       setDirectionId(moreInfo.directionId ?? null);
       setGroupId(moreInfo.groupId ?? null);
@@ -101,7 +117,7 @@ const TestsCrud = () => {
 
     setSaving(true);
     try {
-      const body: any = { title, type, minScore };
+      const body: any = { title, type, status, minScore };
       if (directionId) body.directionId = directionId;
       if (groupId) body.groupId = groupId;
 
@@ -134,6 +150,62 @@ const TestsCrud = () => {
     }
   }
 
+  async function generateAiTest() {
+    const selectedGroup = groups.find((g: any) => Number(g.id) === Number(groupId));
+    const effectiveDirectionId = directionId ?? selectedGroup?.directionId;
+
+    if (!effectiveDirectionId) {
+      toast.error("AI test uchun yo'nalish yoki yo'nalishga ulangan guruh tanlang");
+      return;
+    }
+
+    if (!aiTopic.trim()) {
+      toast.error("AI uchun mavzu kiriting");
+      return;
+    }
+
+    setAiLoading(true);
+
+    try {
+      const res = await instance(cookies.accessToken).post("/tests/ai-generate", {
+        directionId: Number(effectiveDirectionId),
+        groupId: groupId ? Number(groupId) : undefined,
+        type,
+        topic: aiTopic.trim(),
+        count: aiCount,
+        difficulty: aiDifficulty,
+      });
+
+      const data = res.data?.data;
+
+      if (data?.title) setTitle(data.title);
+      if (data?.type) setType(data.type);
+      if (data?.directionId) setDirectionId(Number(data.directionId));
+      if (data?.groupId) setGroupId(Number(data.groupId));
+
+      if (Array.isArray(data?.questions) && data.questions.length > 0) {
+        setQuestions(
+          data.questions.map((q: any) => ({
+            text: q.text ?? "",
+            choices: Array.isArray(q.choices) && q.choices.length
+              ? q.choices.map((c: any) => ({
+                  text: c.text ?? "",
+                  isCorrect: Boolean(c.isCorrect),
+                }))
+              : [emptyChoice(), emptyChoice(), emptyChoice(), emptyChoice()],
+          }))
+        );
+        toast.success("AI test savollari tayyorlandi!");
+      } else {
+        toast.error("AI savollar qaytarmadi");
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message ?? "AI test yaratishda xatolik");
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
   const addQuestion = () => setQuestions((p) => [...p, emptyQuestion()]);
   const removeQuestion = (qi: number) => setQuestions((p) => p.filter((_, i) => i !== qi));
   const setQText = (qi: number, text: string) =>
@@ -156,7 +228,7 @@ const TestsCrud = () => {
   const selectedType = TEST_TYPES.find((t) => t.value === type);
 
   return (
-    <div style={{ padding: "28px", background: "#f8f7f4", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", background: "#f8f7f4", minHeight: "100%" }}>
       {/* Top bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
         <Button onClick={() => navigate(-1)} icon={<ArrowLeftOutlined />}
@@ -196,6 +268,20 @@ const TestsCrud = () => {
               </div>
             ))}
           </div>
+        </div>
+
+
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ display: "block", fontWeight: 600, color: "#4a3728", marginBottom: 8, fontSize: 14 }}>
+            Test holati
+          </label>
+          <Select
+            value={status}
+            onChange={setStatus}
+            size="large"
+            style={{ width: "100%" }}
+            options={TEST_STATUSES}
+          />
         </div>
 
         {/* Direction and Group selection */}
@@ -285,6 +371,81 @@ const TestsCrud = () => {
           </div>
         </div>
       </div>
+
+      {/* AI generate block */}
+      {!id && (
+        <div style={{ maxWidth: 760, margin: "0 auto 24px", background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 4px 24px rgba(0,0,0,0.07)", border: "1px solid #f0e8de" }}>
+          <Checkbox checked={aiEnabled} onChange={(e) => setAiEnabled(e.target.checked)}>
+            <span style={{ fontWeight: 700, color: "#4a3728" }}>AI orqali test yaratish</span>
+          </Checkbox>
+
+          {aiEnabled && (
+            <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "1fr 160px 160px", gap: 14 }}>
+              <div>
+                <label style={{ display: "block", fontWeight: 600, color: "#4a3728", marginBottom: 8, fontSize: 14 }}>
+                  Mavzu
+                </label>
+                <Input
+                  value={aiTopic}
+                  onChange={(e) => setAiTopic(e.target.value)}
+                  placeholder="Masalan: HTML asoslari, React hooks, NestJS module"
+                  size="large"
+                  style={{ borderRadius: 12, border: "2px solid #e8ddd0" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontWeight: 600, color: "#4a3728", marginBottom: 8, fontSize: 14 }}>
+                  Savollar soni
+                </label>
+                <Select
+                  value={aiCount}
+                  onChange={setAiCount}
+                  size="large"
+                  style={{ width: "100%" }}
+                  options={[5, 10, 15, 20, 25, 30].map((n) => ({ value: n, label: `${n} ta` }))}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontWeight: 600, color: "#4a3728", marginBottom: 8, fontSize: 14 }}>
+                  Qiyinlik
+                </label>
+                <Select
+                  value={aiDifficulty}
+                  onChange={setAiDifficulty}
+                  size="large"
+                  style={{ width: "100%" }}
+                  options={[
+                    { value: "easy", label: "Oson" },
+                    { value: "medium", label: "O'rtacha" },
+                    { value: "hard", label: "Qiyin" },
+                  ]}
+                />
+              </div>
+
+              <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  loading={aiLoading}
+                  onClick={generateAiTest}
+                  size="large"
+                  style={{
+                    background: "linear-gradient(135deg, #2563eb, #7c3aed)",
+                    border: "none",
+                    color: "#fff",
+                    borderRadius: 12,
+                    height: 44,
+                    paddingInline: 22,
+                    fontWeight: 700,
+                  }}
+                >
+                  AI bilan savollar yaratish
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Questions — only shown in CREATE mode */}
       {!id && (

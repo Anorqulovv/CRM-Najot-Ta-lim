@@ -5,7 +5,7 @@ import { Skeleton } from "antd"
 import {
   UserOutlined, EditOutlined, SaveOutlined,
   CloseOutlined, CameraOutlined, PhoneOutlined,
-  IdcardOutlined, TeamOutlined, CalendarOutlined,
+  IdcardOutlined, TeamOutlined, CalendarOutlined, LockOutlined,
 } from "@ant-design/icons"
 import { GetMe } from "../../../service"
 import { QueryPATH } from "../../../components"
@@ -73,7 +73,14 @@ const Profile = () => {
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [avatarLoading, setAvatarLoading] = useState(false)
-  const [form, setForm] = useState({ fullName: "", username: "", phone: "" })
+  const [form, setForm] = useState({
+    fullName: "",
+    username: "",
+    phone: "",
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
   const fileRef = useRef<HTMLInputElement>(null)
 
   const initials = user?.fullName
@@ -94,21 +101,72 @@ const Profile = () => {
         .format(new Date(user.createdAt))
     : "—"
 
+
   const startEdit = () => {
-    setForm({ fullName: user?.fullName ?? "", username: user?.username ?? "", phone: user?.phone ?? "" })
+    setForm({
+      fullName: user?.fullName ?? "",
+      username: user?.username ?? "",
+      phone: user?.phone ?? "",
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    })
     setEditing(true)
   }
 
   const saveProfile = async () => {
     setSaving(true)
     try {
-      await instance(cookies.accessToken).patch("/auth/profile", form)
+      const wantsPasswordChange =
+        Boolean(form.oldPassword || form.newPassword || form.confirmPassword)
+
+      if (wantsPasswordChange) {
+        if (!form.oldPassword || !form.newPassword || !form.confirmPassword) {
+          toast.error("Parolni o'zgartirish uchun barcha parol maydonlarini to'ldiring")
+          return
+        }
+
+        if (form.newPassword.length < 6) {
+          toast.error("Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak")
+          return
+        }
+
+        if (form.newPassword !== form.confirmPassword) {
+          toast.error("Yangi parol va tasdiqlash paroli mos emas")
+          return
+        }
+      }
+
+      const payload: any = {
+        fullName: form.fullName,
+        username: form.username,
+        phone: form.phone,
+      }
+
+      if (wantsPasswordChange) {
+        payload.oldPassword = form.oldPassword
+        payload.newPassword = form.newPassword
+        payload.confirmPassword = form.confirmPassword
+      }
+
+      await instance(cookies.accessToken).patch("/auth/profile", payload)
       queryClient.invalidateQueries({ queryKey: [QueryPATH.me] })
-      toast.success("Profil yangilandi!")
+      toast.success(wantsPasswordChange ? "Profil va parol yangilandi!" : "Profil yangilandi!")
       setEditing(false)
     } catch (e: any) {
       toast.error(e?.response?.data?.message ?? "Xatolik yuz berdi")
     } finally { setSaving(false) }
+  }
+
+
+  const removeAvatar = async () => {
+    try {
+      await instance(cookies.accessToken).patch("/auth/profile", { avatar: "" })
+      queryClient.invalidateQueries({ queryKey: [QueryPATH.me] })
+      toast.success("Profil rasmi olib tashlandi")
+    } catch {
+      toast.error("Rasmni olib tashlab bo'lmadi")
+    }
   }
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,8 +204,8 @@ const Profile = () => {
 
   return (
     <div style={{
-      minHeight: "100vh",
-      padding: "36px 20px",
+      minHeight: "100%",
+      padding: "18px 20px",
       display: "flex",
       justifyContent: "center",
       alignItems: "flex-start",
@@ -212,6 +270,31 @@ const Profile = () => {
                   <CameraOutlined />
                 </div>
                 <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatarChange} />
+                {user?.avatar && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeAvatar()
+                    }}
+                    title="Rasmni olib tashlash"
+                    style={{
+                      position: "absolute",
+                      bottom: 2,
+                      left: 2,
+                      width: 30,
+                      height: 30,
+                      borderRadius: "50%",
+                      background: "#ef4444",
+                      color: "#fff",
+                      border: "3px solid #130c08",
+                      cursor: "pointer",
+                      fontWeight: 800,
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
               </div>
 
               {/* Name + badges */}
@@ -317,6 +400,43 @@ const Profile = () => {
               }
             </InfoRow>
 
+            {editing && (
+              <>
+                <InfoRow icon={<LockOutlined />} label="Eski parol">
+                  <input
+                    type="password"
+                    style={inputStyle}
+                    value={form.oldPassword}
+                    onChange={e => setForm(p => ({ ...p, oldPassword: e.target.value }))}
+                    placeholder="Eski parol"
+                    autoComplete="current-password"
+                  />
+                </InfoRow>
+
+                <InfoRow icon={<LockOutlined />} label="Yangi parol">
+                  <input
+                    type="password"
+                    style={inputStyle}
+                    value={form.newPassword}
+                    onChange={e => setForm(p => ({ ...p, newPassword: e.target.value }))}
+                    placeholder="Yangi parol"
+                    autoComplete="new-password"
+                  />
+                </InfoRow>
+
+                <InfoRow icon={<LockOutlined />} label="Yangi parolni tasdiqlash">
+                  <input
+                    type="password"
+                    style={inputStyle}
+                    value={form.confirmPassword}
+                    onChange={e => setForm(p => ({ ...p, confirmPassword: e.target.value }))}
+                    placeholder="Yangi parolni qayta kiriting"
+                    autoComplete="new-password"
+                  />
+                </InfoRow>
+              </>
+            )}
+
             {user?.direction && (
               <InfoRow icon={<TeamOutlined />} label="Yo'nalish">
                 <span style={{ fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.82)" }}>{user.direction?.name || "—"}</span>
@@ -329,6 +449,7 @@ const Profile = () => {
           </div>
 
         </div>
+
 
         <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.14)", letterSpacing: "0.4px" }}>
           Najot Ta'lim CRM — Profil sahifasi

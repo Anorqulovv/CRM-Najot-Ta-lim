@@ -1,4 +1,4 @@
-import LoginImg from "./login-img.png"
+import LoginImg from "./login-img.webp"
 
 
 export {LoginImg}

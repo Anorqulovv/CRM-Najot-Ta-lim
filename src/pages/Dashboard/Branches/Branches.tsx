@@ -3,8 +3,8 @@ import { SearchOutlined, PlusCircleOutlined, EditOutlined, DeleteOutlined, BankO
 import { useCookies } from "react-cookie"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { GetAll, Delete } from "../../../service"
-import { debounce } from "../../../hooks"
+import { GetAll } from "../../../service"
+import { debounce, instance } from "../../../hooks"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCurrentUser } from "../../../hooks/useCurrentUser"
 import { Caption } from "../../../components"
@@ -22,20 +22,30 @@ const Branches = () => {
   const name = debounce(search, 600)
   const queryClient = useQueryClient()
   const currentUser = useCurrentUser()
-  const isSuperAdmin = currentUser?.role === "SUPERADMIN"
+  const isSuperAdmin = ["SUPERADMIN", "ADMIN"].includes(currentUser?.role ?? "")
 
   const { data: branches = [], isLoading } = GetAll(
     QueryBranches, [name], cookies.accessToken, "/branches", { name }, navigate
   )
 
-  const { mutate: DeleteBranch, isPending: delLoading } = Delete(
-    cookies.accessToken, `/branches/${delModal.id}`, navigate, queryClient, QueryBranches
-  )
+  const delLoading = false
+
+  const handleDeleteBranch = async () => {
+    if (!delModal.id) return
+
+    try {
+      await instance(cookies.accessToken).delete(`/branches/${delModal.id}`)
+      queryClient.invalidateQueries({ queryKey: [QueryBranches] })
+      setDelModal({ open: false })
+    } catch (err: any) {
+      console.error(err)
+    }
+  }
 
   const columns = [
     {
-      title: "ID", dataIndex: "id", key: "id", width: 60,
-      render: (id: number) => <Tag color="orange" style={{ borderRadius: 6, fontWeight: 700 }}>#{id}</Tag>
+      title: "№", dataIndex: "order", key: "order", width: 60,
+      render: (order: number) => <Tag color="orange" style={{ borderRadius: 6, fontWeight: 700 }}>#{order}</Tag>
     },
     {
       title: "Filial nomi", dataIndex: "name", key: "name",
@@ -82,7 +92,7 @@ const Branches = () => {
   return (
     <div style={{ padding: '24px' }}>
       {/* Header */}
-      <Caption count={branches.length} title="Filiallar"/>
+      <Caption count={branches.length} title="Filiallar" hideCreate={!isSuperAdmin} />
 
       {/* Search */}
       <div style={{ marginBottom: 18 }}>
@@ -95,7 +105,7 @@ const Branches = () => {
       <div style={{ background: '#fff', borderRadius: 14, border: '1px solid rgba(0,0,0,0.07)', overflow: 'hidden' }}>
         <Table
           loading={isLoading}
-          dataSource={branches.map((b: any) => ({ ...b, key: b.id }))}
+          dataSource={branches.map((b: any, index: number) => ({ ...b, key: b.id, order: index + 1 }))}
           columns={columns}
           pagination={{ pageSize: 15, showSizeChanger: true, showTotal: t => `Jami ${t} ta` }}
           size="middle"
@@ -104,7 +114,7 @@ const Branches = () => {
 
       {/* Delete modal */}
       <Modal open={delModal.open} onCancel={() => setDelModal({ open: false })}
-        onOk={() => { DeleteBranch(); setDelModal({ open: false }) }}
+        onOk={handleDeleteBranch}
         confirmLoading={delLoading} okText="Ha, o'chirish" cancelText="Bekor qilish"
         okButtonProps={{ danger: true, style: { borderRadius: 8 } }}
         cancelButtonProps={{ style: { borderRadius: 8 } }}

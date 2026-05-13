@@ -20,7 +20,7 @@ const C = {
   accentBorder: '#f0e8df',
   inputStyle: {
     borderRadius: 9, borderColor: '#e5d8cc',
-    background: '#fdfaf7', height: 44,
+    background: '#fdfaf7', minHeight: 44,
   } as React.CSSProperties,
 }
 
@@ -54,7 +54,8 @@ const GroupsCrud = () => {
   const currentUser = useCurrentUser()
   const isTeacher = currentUser?.role === "TEACHER"
   const isSupport = currentUser?.role === "SUPPORT"
-  const isReadOnly = isSupport
+  const isAdmin = ["SUPERADMIN", "ADMIN"].includes(currentUser?.role ?? "")
+  const isReadOnly = !isAdmin
 
   const { groupId, id: stackPathId, teacherId: teacherPathId, supportId: supportPathId } =
     useParams<{ groupId?: string, id?: string, teacherId?: string, supportId?: string }>()
@@ -146,7 +147,7 @@ const GroupsCrud = () => {
 
   const isUpdate = Boolean(groupId)
   const isLoading = isUpdate ? updateLoading : createLoading
-  const isDirectionDisabled = !!stackPathId || !!teacherPathId || !!supportPathId || isTeacher || isSupport
+  const isDirectionDisabled = !!stackPathId || !!teacherPathId || !!supportPathId || isTeacher || isSupport || isReadOnly || isReadOnly
 
   return (
     <form onSubmit={handleSubmit} style={{ padding: '24px 24px', maxWidth: 860, margin: '0 auto' }}>
@@ -236,13 +237,13 @@ const GroupsCrud = () => {
           <Field label={<><CalendarOutlined /> Boshlanish sanasi</>}>
             <DatePicker value={startDate} format={dateFormat}
               onChange={(date) => setStartDate(date)} disabled={isReadOnly}
-              size="large" style={{ borderRadius: 9, height: 44, width: '100%' }} placeholder="Boshlanish sanasini tanlang" />
+              size="large" style={{ borderRadius: 9, minHeight: 44, width: '100%' }} placeholder="Boshlanish sanasini tanlang" />
           </Field>
 
           <Field label={<><CalendarOutlined /> Tugash sanasi</>}>
             <DatePicker value={endDate} format={dateFormat}
               onChange={(date) => setEndDate(date)} disabled={isReadOnly}
-              size="large" style={{ borderRadius: 9, height: 44, width: '100%' }}
+              size="large" style={{ borderRadius: 9, minHeight: 44, width: '100%' }}
               placeholder="Tugash sanasini tanlang"
               disabledDate={(current) => startDate ? current.isBefore(startDate, "day") : false} />
           </Field>
@@ -250,7 +251,7 @@ const GroupsCrud = () => {
           <Field label={<><FlagOutlined /> Holat</>} required={!isReadOnly} fullWidth>
             <Select value={status} onChange={(val) => setStatus(val)}
               disabled={isReadOnly} size="large" placeholder="Status tanlang"
-              options={statusOptions} style={{ width: '100%', height: 44 }} />
+              options={statusOptions} style={{ width: '100%', minHeight: 44 }} />
           </Field>
 
           {/* ── Dars jadvali ── */}
@@ -292,7 +293,7 @@ const GroupsCrud = () => {
               size="large"
               placeholder="Vaqtni tanlang"
               minuteStep={5}
-              style={{ width: '100%', borderRadius: 9, height: 44 }}
+              style={{ width: '100%', borderRadius: 9, minHeight: 44 }}
             />
           </Field>
 

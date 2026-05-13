@@ -28,8 +28,8 @@ type MenuItem = {
 };
 
 const ALL_MENU_ITEMS: MenuItem[] = [
-  { key: '0', icon: <PieChartOutlined />, label: "Yo'nalishlar", path: PATH.directions, roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'SUPPORT'] },
-  { key: '1', icon: <BankOutlined />, label: 'Filiallar', path: PATH.branches, roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'SUPPORT'] },
+  { key: '0', icon: <PieChartOutlined />, label: "Yo'nalishlar", path: PATH.directions, roles: ['SUPERADMIN', 'ADMIN'] },
+  { key: '1', icon: <BankOutlined />, label: 'Filiallar', path: PATH.branches, roles: ['SUPERADMIN', 'ADMIN'] },
   { key: '2', icon: <BarChartOutlined />, label: 'Guruhlar', path: PATH.groups, roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'SUPPORT'] },
   { key: '3', icon: <UserOutlined />, label: 'Ustozlar', path: PATH.teachers, roles: ['SUPERADMIN', 'ADMIN'] },
   { key: '4', icon: <CustomerServiceOutlined />, label: 'Support', path: PATH.support, roles: ['SUPERADMIN', 'ADMIN'] },
@@ -39,7 +39,8 @@ const ALL_MENU_ITEMS: MenuItem[] = [
   { key: '8', icon: <CalendarOutlined />, label: 'Davomat', path: '/attendance', roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'STUDENT', 'SUPPORT'] },
   { key: '9', icon: <BellOutlined />, label: 'Bildirishnomalar', path: PATH.notifications, roles: ['SUPERADMIN', 'ADMIN'] },
   { key: '10', icon: <AuditOutlined />, label: 'Foydalanuvchilar', path: PATH.users, roles: ['SUPERADMIN'] },
-  { key: '11', icon: <UserOutlined />, label: 'Profilim', path: PATH.profile, roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'SUPPORT', 'STUDENT', 'PARENT'] },
+  { key: '11', icon: <BarChartOutlined />, label: 'Farzand natijalari', path: PATH.parentResults, roles: ['PARENT'] },
+  { key: '12', icon: <UserOutlined />, label: 'Profilim', path: PATH.profile, roles: ['SUPERADMIN', 'ADMIN', 'TEACHER', 'SUPPORT', 'STUDENT', 'PARENT'] },
 ];
 
 const Sitebar: React.FC = () => {
@@ -130,9 +131,20 @@ const Sitebar: React.FC = () => {
       }}>
         {items.map((item) => {
           const isHome = item.path === '/';
+
+          const isStudentsParents = item.path === PATH.studentsParents;
+          const isStudents = item.path === PATH.students;
+
           const isActive = isHome
             ? location.pathname === '/'
-            : location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+            : isStudentsParents
+              ? location.pathname === PATH.studentsParents || location.pathname.startsWith(PATH.studentsParents + '/')
+              : isStudents
+                ? location.pathname === PATH.students || (
+                    location.pathname.startsWith(PATH.students + '/') &&
+                    !location.pathname.startsWith(PATH.studentsParents)
+                  )
+                : location.pathname === item.path || location.pathname.startsWith(item.path + '/');
 
           return (
             <Link
@@ -209,7 +221,7 @@ const Sitebar: React.FC = () => {
         letterSpacing: '0.2px',
         fontFamily: "'Plus Jakarta Sans', sans-serif",
       }}>
-        {collapse ? '©' : "© 2024 Najot Ta'lim"}
+        {collapse ? '©' : "© 2026 Najot Ta'lim"}
       </div>
     </aside>
   );

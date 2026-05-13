@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   BellOutlined,
   LogoutOutlined,
@@ -29,6 +30,7 @@ const ACCENT_DARK = '#8f5c28';
 
 const Header = () => {
   const [cookies, , removeCookie] = useCookies(['accessToken']);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -75,6 +77,9 @@ const Header = () => {
     setLoading(true);
     setTimeout(() => {
       removeCookie('accessToken', { path: '/' });
+      queryClient.clear();
+      localStorage.clear();
+      sessionStorage.clear();
       toast.success("Chiqib ketdingiz");
       setOpenModal(false);
       navigate(PATH.home);

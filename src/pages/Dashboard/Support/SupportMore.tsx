@@ -7,7 +7,7 @@ import { Button, Modal, Skeleton, Tag } from "antd"
 import { useNavigate, useParams } from "react-router-dom"
 import { QueryPATH } from "../../../components"
 import { useCookies } from "react-cookie"
-import { Delete, GetById } from "../../../service"
+import { Delete, GetById, GetAll } from "../../../service"
 import { useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import Groups from "../Groups/Groups"
@@ -49,7 +49,20 @@ const SupportMore = () => {
     const queryClient = useQueryClient()
 
     const { data: moreInfo = {}, isLoading } = GetById(supportId, cookies.accessToken, QueryPATH.supportMore, "/supports")
+    const { data: directions = [] } = GetAll(QueryPATH.directions, [], cookies.accessToken, "/directions", undefined)
     const { mutate: DeleteSupport, isPending } = Delete(cookies.accessToken, `/supports/${supportId}`, navigate, queryClient, QueryPATH.support)
+
+    const getDirectionName = (id: number) => {
+        const fromDirections = directions.find((direction: any) => Number(direction.id) === Number(id))
+        if (fromDirections?.name) return fromDirections.name
+
+        const fromMoreInfoDirections = moreInfo.directions?.find((direction: any) => Number(direction.id) === Number(id))
+        if (fromMoreInfoDirections?.name) return fromMoreInfoDirections.name
+
+        if (Number(moreInfo.direction?.id) === Number(id)) return moreInfo.direction?.name
+
+        return `ID:${id}`
+    }
 
     const initials = moreInfo.fullName
         ? `${moreInfo.fullName.split(" ")[0]?.[0] ?? ""}${moreInfo.fullName.split(" ")[1]?.[0] ?? ""}`
@@ -107,13 +120,19 @@ const SupportMore = () => {
                         <InfoRow icon={<PhoneOutlined />} label="Telefon raqami" value={moreInfo.phone} isLoading={isLoading} />
                         <InfoRow icon={<SendOutlined />} label="Telegram ID" value={moreInfo.telegramId || "—"} isLoading={isLoading} />
                         <InfoRow icon={<ApartmentOutlined />} label="Yo'nalishlar" value={
-                          moreInfo.directionIds && moreInfo.directionIds.length > 0
-                            ? moreInfo.directionIds.map((id: number) => (
-                                <Tag key={id} color="orange" style={{ marginBottom: 2 }}>
-                                  {moreInfo.direction?.id === id ? moreInfo.direction?.name : `ID:${id}`}
-                                </Tag>
-                              ))
-                            : moreInfo.direction?.name || "—"
+                            moreInfo.directionIds && moreInfo.directionIds.length > 0
+                                ? moreInfo.directionIds.map((id: number) => (
+                                    <Tag key={id} color="orange" style={{ marginBottom: 2 }}>
+                                        {getDirectionName(id)}
+                                    </Tag>
+                                ))
+                                : moreInfo.directions && moreInfo.directions.length > 0
+                                    ? moreInfo.directions.map((direction: any) => (
+                                        <Tag key={direction.id} color="orange" style={{ marginBottom: 2 }}>
+                                            {direction.name}
+                                        </Tag>
+                                    ))
+                                    : moreInfo.direction?.name || "—"
                         } isLoading={isLoading} />
                         <InfoRow icon={<CalendarOutlined />} label="Yaratilingan vaqt" value={formatDate(moreInfo.createdAt)} isLoading={isLoading} />
                         <InfoRow icon={<HistoryOutlined />} label="O'zgartirilgan vaqt" value={formatDate(moreInfo.updatedAt)} isLoading={isLoading} />
