@@ -1,0 +1,1224 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-primary: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --accent: #c8864a;
+  --accent-dark: #8f5c28;
+}
+
+* {
+  font-family: var(--font-primary);
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display) !important;
+  font-weight: 700;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: var(--font-primary);
+}
+
+.ant-menu-item-selected {
+  background-color: #ffffffa5 !important;
+  color: black !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-pagination-item {
+  border-color: #8f5c28 !important;
+}
+
+.ant-pagination-item > a {
+  color: #8f5c28 !important;
+}
+
+.ant-pagination-item-active {
+  border-color: #8f5c28 !important;
+  background: #f5ece3 !important;
+}
+
+.ant-input-affix-wrapper-focused {
+  border-color: #8f5c28 !important;
+  box-shadow: 0 0 0 2px rgba(143, 92, 40, 0.12) !important;
+}
+
+.ant-spin-dot-holder {
+  color: #8f5c28 !important;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #7a4520, #c8864a) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+.ant-btn-primary:hover {
+  opacity: 0.88 !important;
+}
+
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #8f5c28 !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: #8f5c28 !important;
+  box-shadow: 0 0 0 2px rgba(143,92,40,0.1) !important;
+}
+
+.ant-picker:hover, .ant-picker-focused {
+  border-color: #8f5c28 !important;
+  box-shadow: 0 0 0 2px rgba(143,92,40,0.1) !important;
+}
+
+.ant-tabs-ink-bar { background: #8f5c28 !important; }
+.ant-tabs-tab-active .ant-tabs-tab-btn { color: #8f5c28 !important; }
+.ant-tabs-tab:hover .ant-tabs-tab-btn { color: #c8864a !important; }
+
+.ant-table-thead > tr > th {
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  background: #faf7f4 !important;
+  color: #8f5c28 !important;
+  border-bottom: 2px solid #f0e8df !important;
+}
+
+.ant-table-row:hover > td { background: #fdf9f7 !important; }
+
+.ant-modal-content {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.ant-modal-header { padding: 20px 24px 16px !important; }
+.ant-modal-body { padding: 0 24px 20px !important; }
+.ant-modal-footer { padding: 12px 24px 20px !important; border-top: 1px solid #f0e8df !important; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(143,92,40,0.18); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(143,92,40,0.35); }
+
+/* Ant Select large size height fix - consistent with Input height 44px */
+.ant-select-lg .ant-select-selector {
+  min-height: 44px !important;
+  align-items: center !important;
+}
+
+.ant-select-lg {
+  height: 44px !important;
+}
+/* Ant Design multiple select tags fix */
+.ant-select-multiple {
+  min-height: 44px !important;
+}
+
+.ant-select-multiple .ant-select-selector {
+  min-height: 44px !important;
+  height: auto !important;
+  padding: 4px 8px !important;
+  align-items: flex-start !important;
+}
+
+.ant-select-multiple .ant-select-selection-wrap {
+  min-height: 34px !important;
+  height: auto !important;
+  align-self: center !important;
+}
+
+.ant-select-multiple .ant-select-selection-overflow {
+  row-gap: 6px !important;
+  padding: 2px 0 !important;
+}
+
+.ant-select-multiple .ant-select-selection-item {
+  height: 26px !important;
+  line-height: 24px !important;
+  border-radius: 8px !important;
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+  font-size: 13px !important;
+}
+
+.ant-select-multiple .ant-select-selection-placeholder {
+  line-height: 34px !important;
+}
+
+/* ================= RESPONSIVE LAYOUT FIXES ================= */
+
+.crm-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #1e2128;
+}
+
+.crm-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+
+.crm-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  background: #111827 !important;
+}
+
+
+
+.crm-sidebar {
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s ease;
+}
+
+.crm-mobile-overlay {
+  display: none;
+}
+
+.crm-responsive-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.crm-responsive-table .ant-table-wrapper,
+.crm-responsive-table .ant-table {
+  min-width: 720px;
+}
+
+.crm-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.crm-caption-title h1 {
+  font-weight: 700;
+  font-size: 25px;
+  margin: 0;
+}
+
+.crm-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 28px;
+}
+
+.crm-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 1024px) {
+  .crm-responsive-table .ant-table {
+    min-width: 820px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow: auto;
+  }
+
+  .crm-layout {
+    height: 100dvh;
+  }
+
+  .crm-main {
+    width: 100%;
+  }
+
+  .crm-content {
+    padding-bottom: 16px;
+  }
+
+  .crm-sidebar {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 240px !important;
+    z-index: 1000 !important;
+    transform: translateX(-100%);
+    box-shadow: 16px 0 40px rgba(0,0,0,0.28);
+  }
+
+  .crm-sidebar.crm-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .crm-mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+  }
+
+  .crm-header {
+    padding: 0 12px !important;
+  }
+
+  .crm-header-user-name {
+    display: none;
+  }
+
+  .crm-caption {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .crm-caption-title h1 {
+    font-size: 21px;
+  }
+
+  .crm-caption .ant-btn {
+    width: 100%;
+  }
+
+  .crm-form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ant-modal {
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto !important;
+  }
+
+  .ant-modal-content {
+    border-radius: 14px !important;
+  }
+
+  .ant-picker,
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-select {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .crm-content > div {
+    padding: 14px !important;
+  }
+
+  .crm-responsive-table .ant-table {
+    min-width: 760px;
+  }
+
+  .ant-card-body {
+    padding: 18px !important;
+  }
+
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h2 {
+    font-size: 19px !important;
+  }
+}
+
+/* Sidebar text visibility fix */
+.crm-sidebar-mini {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .crm-sidebar-collapsed .crm-sidebar-text {
+    display: none !important;
+  }
+
+  .crm-sidebar-collapsed .crm-sidebar-mini {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .crm-sidebar.crm-sidebar-open .crm-sidebar-text {
+    display: block !important;
+  }
+
+  .crm-sidebar.crm-sidebar-open .crm-sidebar-mini {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .crm-mobile-overlay {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.45) !important;
+    z-index: 999 !important;
+  }
+
+  .crm-sidebar {
+    z-index: 1000 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .crm-content {
+    background: url("/src/assets/images/login-img.webp") center center / cover no-repeat fixed !important;
+  }
+
+  
+}
+
+
+/* ================= HEADER + SIDEBAR TRANSPARENT STYLE (consolidated) ================= */
+
+/* Sidebar - shaffof qoramtir, blur bilan */
+.crm-sidebar {
+  background: rgba(18, 22, 30, 0.72) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Header - sidebar bilan bir xil shaffoflik va blur */
+.crm-header {
+  background: rgba(18, 22, 30, 0.72) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Header ichidagi buttonlar sidebar stilida */
+.crm-header button {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+  transition: all 0.15s ease;
+}
+
+/* Headerdagi user badge */
+.crm-header .ant-avatar {
+  background: linear-gradient(135deg, #7a4520, #c8864a) !important;
+  color: #fff !important;
+}
+
+/* Background rasmga blur/dim - sahifa orqa foni */
+.crm-content::before {
+  content: "";
+  position: fixed;
+  inset: 64px 0 0 240px;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("/src/assets/images/login-img.webp");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(10px) brightness(0.58) saturate(0.9);
+  transform: scale(1.055);
+  opacity: 1;
+}
+
+.crm-content::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Page content background ustida tursin */
+.crm-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Page wrapperlar fonni yopmasin */
+.crm-content .bg-\[\#f8f7f4\],
+.crm-content .bg-\[\#f2ede7\] {
+  background-color: transparent !important;
+}
+
+/* Sidebar / header / content orasidagi nozik ajratuvchi chiziqlar */
+.crm-main {
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.crm-content {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+@media (max-width: 768px) {
+  .crm-content::before,
+  .crm-content::after {
+    inset: 56px 0 0 0;
+  }
+
+  .crm-content::before {
+    filter: blur(10px) brightness(0.58) saturate(0.9);
+    transform: scale(1.07);
+  }
+
+  .crm-main {
+    border-left: none;
+  }
+
+  .crm-sidebar {
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* ================= BROWN PAGE THEME FINAL ================= */
+
+:root {
+  --crm-brown: #8f5c28;
+  --crm-brown-dark: #7a4520;
+  --crm-brown-light: #c8864a;
+  --crm-brown-soft: #f5ece3;
+}
+
+.crm-content h1,
+.crm-content h2,
+.crm-content h3 {
+  color: var(--crm-brown) !important;
+}
+
+.crm-content .ant-table-thead > tr > th {
+  color: var(--crm-brown) !important;
+  background: #fffaf5 !important;
+  border-bottom: 2px solid #ead8c7 !important;
+}
+
+.crm-content .ant-input-affix-wrapper,
+.crm-content .ant-input,
+.crm-content .ant-select-selector {
+  border-color: #e5d8cc !important;
+}
+
+.crm-content .ant-input-affix-wrapper:hover,
+.crm-content .ant-input:hover,
+.crm-content .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--crm-brown) !important;
+}
+
+.crm-content .ant-input-affix-wrapper-focused,
+.crm-content .ant-input:focus,
+.crm-content .ant-select-focused .ant-select-selector {
+  border-color: var(--crm-brown) !important;
+  box-shadow: 0 0 0 2px rgba(143, 92, 40, 0.14) !important;
+}
+
+.crm-content .ant-input-prefix,
+.crm-content .anticon-search {
+  color: var(--crm-brown-light) !important;
+}
+
+.crm-content .ant-btn-primary {
+  background: linear-gradient(135deg, var(--crm-brown-dark), var(--crm-brown-light)) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 14px rgba(143,92,40,0.22) !important;
+}
+
+.crm-content .ant-btn-primary:hover {
+  opacity: 0.9 !important;
+}
+
+.crm-content .ant-pagination-item-active {
+  border-color: var(--crm-brown) !important;
+  background: var(--crm-brown-soft) !important;
+}
+
+.crm-content .ant-pagination-item-active a,
+.crm-content .ant-pagination-item a {
+  color: var(--crm-brown) !important;
+}
+
+.crm-content .ant-tabs-ink-bar {
+  background: var(--crm-brown) !important;
+}
+
+.crm-content .ant-tabs-tab-active .ant-tabs-tab-btn,
+.crm-content .ant-tabs-tab:hover .ant-tabs-tab-btn {
+  color: var(--crm-brown) !important;
+}
+
+.crm-content td .ant-btn-primary {
+  background: linear-gradient(135deg, var(--crm-brown), #a36532) !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+/* ================= PAGE TITLE WHITE FINAL ================= */
+
+/* Page sarlavhalari: Yo'nalishlar, Guruhlar, O'quvchilar va hokazo */
+.crm-content h1,
+.crm-content h2,
+.crm-content .crm-page-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
+}
+
+/* Caption ichidagi Jami ... ta subtitle */
+.crm-content h1 + p,
+.crm-content .crm-page-subtitle,
+.crm-content p {
+  color: rgba(255,255,255,0.78) !important;
+}
+
+/* Faqat table/card ichidagi p lar oq bo'lib ketmasin */
+.crm-content .ant-table p,
+.crm-content table p,
+.crm-content .ant-card p,
+.crm-content .bg-white p,
+.crm-content [class*="bg-white"] p {
+  color: inherit !important;
+}
+
+/* Page icon yonidagi title bloklar aniq oq ko'rinsin */
+.crm-content .mb-6 h1,
+.crm-content .mb-6 p {
+  color: #ffffff !important;
+}
+
+.crm-content .mb-6 p {
+  color: rgba(255,255,255,0.72) !important;
+}
+
+/* ================= ALL DASHBOARD PAGE TITLES WHITE ================= */
+
+/* Custom page header titlelar: Testlar, Davomat, Bildirishnomalar, Ota-onalar va boshqalar */
+.crm-content h1,
+.crm-content h2,
+.crm-content h3,
+.crm-content [class*="title"],
+.crm-content [class*="Title"] {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.55) !important;
+}
+
+/* Title yonidagi subtitle / description: Jami..., Sizning..., O'quvchilar... */
+.crm-content h1 + p,
+.crm-content h2 + p,
+.crm-content h3 + p,
+.crm-content [class*="subtitle"],
+.crm-content [class*="Subtitle"],
+.crm-content [class*="description"],
+.crm-content [class*="Description"] {
+  color: rgba(255,255,255,0.78) !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.45) !important;
+}
+
+/* Ant Typography ishlatilgan joylar */
+.crm-content .ant-typography {
+  color: #ffffff !important;
+}
+
+/* Table/card/modal ichidagi yozuvlar oq bo'lib ketmasin */
+.crm-content .ant-table,
+.crm-content .ant-table *,
+.crm-content table,
+.crm-content table *,
+.crm-content .ant-card,
+.crm-content .ant-card *,
+.crm-content .ant-modal,
+.crm-content .ant-modal *,
+.crm-content .bg-white,
+.crm-content .bg-white *,
+.crm-content [class*="bg-white"],
+.crm-content [class*="bg-white"] *,
+.crm-content .ant-list,
+.crm-content .ant-list * {
+  text-shadow: none !important;
+}
+
+/* Table/card ichidagi titlelar asl rangida qolsin */
+.crm-content .ant-table h1,
+.crm-content .ant-table h2,
+.crm-content .ant-table h3,
+.crm-content .ant-table .ant-typography,
+.crm-content .bg-white h1,
+.crm-content .bg-white h2,
+.crm-content .bg-white h3,
+.crm-content [class*="bg-white"] h1,
+.crm-content [class*="bg-white"] h2,
+.crm-content [class*="bg-white"] h3 {
+  color: inherit !important;
+}
+
+/* Header area ichidagi icon yonidagi title/subtitlelar aniq oq bo'lsin */
+.crm-content > div > div:first-child h1,
+.crm-content > div > div:first-child h2,
+.crm-content > div > div:first-child h3,
+.crm-content > div > div:first-child p,
+.crm-content .mb-6 h1,
+.crm-content .mb-6 p {
+  color: #ffffff !important;
+}
+
+.crm-content > div > div:first-child p,
+.crm-content .mb-6 p {
+  color: rgba(255,255,255,0.76) !important;
+}
+
+/* ================= PAGE HEADER TITLE/SUBTITLE WHITE FIX ================= */
+
+.crm-content > div > div:first-child h1,
+.crm-content > div > div:first-child h2,
+.crm-content > div > div:first-child h3,
+.crm-content .mb-6 h1,
+.crm-content .mb-6 h2,
+.crm-content .mb-6 h3 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.55) !important;
+}
+
+.crm-content > div > div:first-child p,
+.crm-content .mb-6 p {
+  color: rgba(255,255,255,0.78) !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
+}
+
+/* Card/table/form ichidagi yozuvlar oq bo'lib ketmasin */
+.crm-content .ant-table *,
+.crm-content .ant-card *,
+.crm-content .bg-white *,
+.crm-content [class*="bg-white"] *,
+.crm-content form *,
+.crm-content textarea,
+.crm-content input {
+  text-shadow: none !important;
+}
+
+/* ================= DIRECTION MORE PAGE FIX ================= */
+
+.direction-more-groups .mb-6 h1,
+.direction-more-groups .mb-6 h2,
+.direction-more-groups .mb-6 h3 {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.direction-more-groups .mb-6 p {
+  color: #8b7355 !important;
+  text-shadow: none !important;
+}
+
+.direction-more-groups .mb-6 {
+  margin-bottom: 18px !important;
+}
+
+.direction-more-groups .ant-input-affix-wrapper,
+.direction-more-groups .ant-select-selector {
+  background: #fff !important;
+}
+
+/* ================= TEACHER MORE GROUPS TITLE FIX ================= */
+
+.teacher-more-groups .mb-6 h1,
+.teacher-more-groups .mb-6 h2,
+.teacher-more-groups .mb-6 h3 {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .mb-6 p {
+  color: #8b7355 !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .ant-input-affix-wrapper,
+.teacher-more-groups .ant-select-selector {
+  background: #fff !important;
+}
+
+/* ================= USTOZ MORE FINAL FIX ================= */
+
+.teacher-info-row,
+.teacher-info-row *,
+.teacher-info-label,
+.teacher-info-value,
+.teacher-info-icon {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.teacher-info-value .ant-tag {
+  color: #d97706 !important;
+}
+
+.teacher-more-groups .mb-6 h1,
+.teacher-more-groups .mb-6 h2,
+.teacher-more-groups .mb-6 h3,
+.teacher-more-groups .mb-6 span {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .mb-6 p {
+  color: #8b7355 !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .ant-input-affix-wrapper,
+.teacher-more-groups .ant-input,
+.teacher-more-groups .ant-select-selector {
+  background: #fff !important;
+}
+
+/* ================= TEACHERS MORE EXACT FIX ================= */
+
+.teacher-more-left-card .teacher-more-label,
+.teacher-more-left-card .teacher-more-value,
+.teacher-more-left-card .teacher-more-value *,
+.teacher-more-left-card .teacher-more-icon,
+.teacher-more-left-card .teacher-more-icon * {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-left-card .ant-tag {
+  color: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+.teacher-more-left-card p,
+.teacher-more-left-card span,
+.teacher-more-left-card div {
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .mb-6 h1,
+.teacher-more-groups .mb-6 h2,
+.teacher-more-groups .mb-6 h3,
+.teacher-more-groups .mb-6 span {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.teacher-more-groups .mb-6 p {
+  color: #8b7355 !important;
+  text-shadow: none !important;
+}
+
+/* ================= TEACHER MORE GROUPS ICON/BUTTON WHITE ONLY ================= */
+
+.teacher-more-groups .mb-6 [style*="linear-gradient"] .anticon,
+.teacher-more-groups .mb-6 [style*="linear-gradient"] svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.teacher-more-groups button,
+.teacher-more-groups button *,
+.teacher-more-groups .ant-btn,
+.teacher-more-groups .ant-btn *,
+.teacher-more-groups .ant-btn .anticon,
+.teacher-more-groups .ant-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ONLY teacher more page: Qo'shish button text/icon white */
+.teacher-more-groups button[style*="linear-gradient"],
+.teacher-more-groups button[style*="linear-gradient"] span,
+.teacher-more-groups button[style*="linear-gradient"] .anticon,
+.teacher-more-groups button[style*="linear-gradient"] svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ================= SUPPORT MORE FINAL FIX ================= */
+
+.support-info-row,
+.support-info-row *,
+.support-info-label,
+.support-info-value,
+.support-info-icon {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.support-info-value .ant-tag {
+  color: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+.support-more-left-card .ant-tag {
+  color: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+.support-more-groups .mb-6 h1,
+.support-more-groups .mb-6 h2,
+.support-more-groups .mb-6 h3 {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.support-more-groups .mb-6 p,
+.support-more-groups .mb-6 span {
+  color: #8b7355 !important;
+  text-shadow: none !important;
+}
+
+.support-more-groups .mb-6 [style*="linear-gradient"] .anticon,
+.support-more-groups .mb-6 [style*="linear-gradient"] svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.support-more-groups button[style*="linear-gradient"],
+.support-more-groups button[style*="linear-gradient"] span,
+.support-more-groups button[style*="linear-gradient"] .anticon,
+.support-more-groups button[style*="linear-gradient"] svg,
+.support-more-groups .ant-btn-primary,
+.support-more-groups .ant-btn-primary span,
+.support-more-groups .ant-btn-primary .anticon,
+.support-more-groups .ant-btn-primary svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.support-more-groups .ant-input-affix-wrapper,
+.support-more-groups .ant-input,
+.support-more-groups .ant-select-selector {
+  background: #fff !important;
+}
+
+/* ONLY SUPPORT MORE LEFT INFO TEXT BLACK */
+.support-more-left-card > div:last-child,
+.support-more-left-card > div:last-child *,
+.support-more-left-card > div:last-child p,
+.support-more-left-card > div:last-child span,
+.support-more-left-card > div:last-child div,
+.support-more-left-card > div:last-child svg {
+  color: #1a1a1a !important;
+  fill: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+/* Yo'nalish taglari jigarrang/orange qolaversin */
+.support-more-left-card > div:last-child .ant-tag,
+.support-more-left-card > div:last-child .ant-tag * {
+  color: #d97706 !important;
+  fill: #d97706 !important;
+  font-weight: 700 !important;
+}
+
+/* ================= STUDENT MORE FINAL FIX ================= */
+
+.student-info-row,
+.student-info-row *,
+.student-info-label,
+.student-info-value,
+.student-info-icon {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.student-info-value .ant-tag,
+.student-more-left-card .ant-tag {
+  font-weight: 700 !important;
+}
+
+.student-more-left-card > div:last-child,
+.student-more-left-card > div:last-child *,
+.student-more-section-card,
+.student-more-section-card *,
+.student-more-section-card p,
+.student-more-section-card span,
+.student-more-section-card div,
+.student-more-section-card svg {
+  color: #1a1a1a !important;
+  fill: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+/* Student badge va tag ranglari buzilmasin */
+.student-more-left-card .ant-tag-blue,
+.student-more-left-card .ant-tag-blue *,
+.student-more-section-card .ant-tag-blue,
+.student-more-section-card .ant-tag-blue * {
+  color: #1677ff !important;
+}
+
+.student-more-left-card .ant-tag-orange,
+.student-more-left-card .ant-tag-orange *,
+.student-more-section-card .ant-tag-orange,
+.student-more-section-card .ant-tag-orange * {
+  color: #d97706 !important;
+}
+
+/* ================= TESTS FINAL UI FIX ================= */
+
+/* Tests page header icon ichidagi belgi oq */
+.tests-page .bg-gradient-to-br .anticon,
+.tests-page .bg-gradient-to-br svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Yangi test button yozuvi va + icon oq */
+.tests-page .tests-create-btn,
+.tests-page .tests-create-btn *,
+.tests-page .tests-create-btn .anticon,
+.tests-page .tests-create-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Test card ichidagi ko'rinmay qolgan textlar */
+.tests-page .group h3,
+.tests-page .group h3 *,
+.tests-page .group strong {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+.tests-page .group .ant-btn,
+.tests-page .group .ant-btn span {
+  color: #8f5c28 !important;
+}
+
+.tests-page .group .ant-btn-dangerous,
+.tests-page .group .ant-btn-dangerous span,
+.tests-page .group .ant-btn-dangerous svg {
+  color: #ff4d4f !important;
+  fill: #ff4d4f !important;
+}
+
+/* Tests create/update button textlari oq */
+.tests-crud-page > div:first-child .ant-btn,
+.tests-crud-page > div:first-child .ant-btn *,
+.tests-crud-page > div:first-child .ant-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Test more sahifasida oq bo'lib qolgan title va table yozuvlari */
+.test-more-page h1,
+.test-more-page h2,
+.test-more-page h3,
+.test-more-page h4,
+.test-more-page h5,
+.test-more-page p,
+.test-more-page span,
+.test-more-page b,
+.test-more-page strong,
+.test-more-page .ant-table,
+.test-more-page .ant-table *,
+.test-more-page .ant-collapse,
+.test-more-page .ant-collapse *,
+.test-more-page .ant-tag {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+/* Test more buttonlar ichidagi yozuvlar oq bo'lsin */
+.test-more-page .ant-btn-primary,
+.test-more-page .ant-btn-primary *,
+.test-more-page .ant-btn-primary svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Test more jadval headerlari */
+.test-more-page .ant-table-thead > tr > th {
+  color: #8f5c28 !important;
+  background: #fffaf5 !important;
+  border-bottom: 1px solid #ead8c7 !important;
+  font-weight: 800 !important;
+}
+
+
+
+/* ONLY ACTIVITY PAGE TABLE TITLES */
+.activity-page h3 {
+  color: #1a1a1a !important;
+  text-shadow: none !important;
+}
+
+/* ================= USERS PAGE FINAL FIX ================= */
+
+.users-page .users-stat-value,
+.users-page .users-stat-value *,
+.users-page .users-stat-label,
+.users-page .users-stat-label * {
+  text-shadow: none !important;
+}
+
+.users-page .users-stat-label {
+  color: #6b5742 !important;
+}
+
+.users-page .bg-white.rounded-xl .users-stat-value {
+  font-weight: 900 !important;
+}
+
+/* Users create/update top buttons text/icon white */
+.users-crud-page > div:first-child .ant-btn,
+.users-crud-page > div:first-child .ant-btn *,
+.users-crud-page > div:first-child .ant-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ================= CAPTION PAGE ICON WHITE ================= */
+
+.caption-icon-box,
+.caption-icon-box *,
+.caption-icon-box .anticon,
+.caption-icon-box svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ================= CAPTION SIDEBAR ICON FINAL ================= */
+
+.caption-icon-box,
+.caption-icon-box *,
+.caption-icon-box .anticon,
+.caption-icon-box svg,
+.caption-icon-box svg path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ================= TEST MORE / TEST TAKE FINAL FIX ================= */
+
+/* Test more page: top Orqaga button */
+.test-more-page > div:first-child > .ant-btn:first-child {
+  height: 42px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  background: linear-gradient(135deg, #8f5c28, #a36532) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 10px 24px rgba(143,92,40,0.24) !important;
+}
+
+.test-more-page > div:first-child > .ant-btn:first-child *,
+.test-more-page > div:first-child > .ant-btn:first-child svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Test more page: brown/green primary-like buttons text white */
+.test-more-page button[style*="linear-gradient"],
+.test-more-page button[style*="#16a34a"],
+.test-more-page button[style*="background: #16a34a"],
+.test-more-page button[style*="background:#16a34a"],
+.test-more-page button[style*="b8782a"],
+.test-more-page button[style*="8f5c28"] {
+  color: #ffffff !important;
+}
+
+.test-more-page button[style*="linear-gradient"] *,
+.test-more-page button[style*="#16a34a"] *,
+.test-more-page button[style*="background: #16a34a"] *,
+.test-more-page button[style*="background:#16a34a"] *,
+.test-more-page button[style*="b8782a"] *,
+.test-more-page button[style*="8f5c28"] *,
+.test-more-page button[style*="linear-gradient"] svg,
+.test-more-page button[style*="#16a34a"] svg,
+.test-more-page button[style*="b8782a"] svg,
+.test-more-page button[style*="8f5c28"] svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Test more page: white card text must stay black */
+.test-more-page h1,
+.test-more-page h2,
+.test-more-page h3,
+.test-more-page h4,
+.test-more-page h5,
+.test-more-page p,
+.test-more-page span,
+.test-more-page strong,
+.test-more-page b,
+.test-more-page .ant-collapse,
+.test-more-page .ant-collapse *,
+.test-more-page .ant-table,
+.test-more-page .ant-table *,
+.test-more-page .ant-modal,
+.test-more-page .ant-modal * {
+  text-shadow: none !important;
+}
+
+.test-more-page .ant-collapse-header,
+.test-more-page .ant-collapse-header *,
+.test-more-page .ant-table-tbody td,
+.test-more-page .ant-table-tbody td *,
+.test-more-page .ant-modal-body,
+.test-more-page .ant-modal-body * {
+  color: #1a1a1a !important;
+}
+
+/* Danger delete buttons qizil bo'lib qolsin */
+.test-more-page .ant-btn-dangerous,
+.test-more-page .ant-btn-dangerous *,
+.test-more-page .ant-btn-dangerous svg {
+  color: #ff4d4f !important;
+  fill: #ff4d4f !important;
+}
+
+/* Test take page: savol/test yozuvlari qora */
+.tests-take-page,
+.tests-take-page *,
+.tests-take-page .ant-typography,
+.tests-take-page .ant-radio-wrapper,
+.tests-take-page .ant-radio-wrapper span,
+.tests-take-page .ant-card,
+.tests-take-page .ant-card * {
+  text-shadow: none !important;
+}
+
+.tests-take-page .ant-typography,
+.tests-take-page .ant-card h1,
+.tests-take-page .ant-card h2,
+.tests-take-page .ant-card h3,
+.tests-take-page .ant-card h4,
+.tests-take-page .ant-card h5,
+.tests-take-page .ant-card p,
+.tests-take-page .ant-card span:not(.ant-radio):not(.ant-radio-inner),
+.tests-take-page .ant-radio-wrapper span:not(.ant-radio):not(.ant-radio-inner) {
+  color: #1a1a1a !important;
+}
+
+.tests-take-page > div:first-child .ant-btn,
+.tests-take-page > div:first-child .ant-btn *,
+.tests-take-page > div:first-child .ant-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Testni yakunlash button */
+.tests-take-page > .ant-btn-primary,
+.tests-take-page > .ant-btn-primary *,
+.tests-take-page > .ant-btn-primary svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
